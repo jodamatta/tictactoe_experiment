@@ -49,6 +49,14 @@ describe('createInitialState', () => {
     expect(createInitialState().gameOver).toBe(false);
   });
 
+  test('catWins starts at 0', () => {
+    expect(createInitialState().catWins).toBe(0);
+  });
+
+  test('dogWins starts at 0', () => {
+    expect(createInitialState().dogWins).toBe(0);
+  });
+
   test('each call returns a distinct board array', () => {
     const s1 = createInitialState();
     const s2 = createInitialState();
@@ -303,5 +311,41 @@ describe('checkWinner — result shape', () => {
       expect(i).toBeGreaterThanOrEqual(0);
       expect(i).toBeLessThanOrEqual(8);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// updateWins
+// ---------------------------------------------------------------------------
+
+describe('updateWins', () => {
+  test('increments catWins when 🐱 wins', () => {
+    const state = createInitialState();
+    updateWins(state, '🐱');
+    expect(state.catWins).toBe(1);
+    expect(state.dogWins).toBe(0);
+  });
+
+  test('increments dogWins when 🐶 wins', () => {
+    const state = createInitialState();
+    updateWins(state, '🐶');
+    expect(state.catWins).toBe(0);
+    expect(state.dogWins).toBe(1);
+  });
+
+  test('does not increment for invalid winner', () => {
+    const state = createInitialState();
+    updateWins(state, 'X');
+    expect(state.catWins).toBe(0);
+    expect(state.dogWins).toBe(0);
+  });
+
+  test('multiple wins accumulate', () => {
+    const state = createInitialState();
+    updateWins(state, '🐱');
+    updateWins(state, '🐶');
+    updateWins(state, '🐱');
+    expect(state.catWins).toBe(2);
+    expect(state.dogWins).toBe(1);
   });
 });
